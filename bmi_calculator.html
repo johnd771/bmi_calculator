@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMI Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+        input, select {
+            margin: 10px 0;
+            padding: 10px;
+            width: calc(100% - 22px);
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .imperial-inputs {
+            display: flex;
+            justify-content: space-between;
+        }
+        .imperial-inputs input {
+            width: 48%;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .adsense-container {
+            margin-top: 20px;
+        }
+    </style>
+    <!-- Google AdSense code -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4582249016821847" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>BMI Calculator</h1>
+        <form id="bmiForm">
+            <label for="gender">Gender:</label>
+            <select id="gender" name="gender" required>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select>
+            <label for="system">Measurement System:</label>
+            <select id="system" name="system" required onchange="updateFields()">
+                <option value="metric">Metric (cm, kg)</option>
+                <option value="imperial">Imperial (ft, in, lbs)</option>
+            </select>
+            <div id="metricInputs">
+                <label for="heightMetric">Height (cm):</label>
+                <input type="number" id="heightMetric" name="heightMetric">
+                <label for="weightMetric">Weight (kg):</label>
+                <input type="number" id="weightMetric" name="weightMetric">
+            </div>
+            <div id="imperialInputs" style="display:none;">
+                <label for="heightImperialFeet">Height (feet and inches):</label>
+                <div class="imperial-inputs">
+                    <input type="number" id="heightImperialFeet" name="heightImperialFeet" placeholder="Feet">
+                    <input type="number" id="heightImperialInches" name="heightImperialInches" placeholder="Inches">
+                </div>
+                <label for="weightImperial">Weight (lbs):</label>
+                <input type="number" id="weightImperial" name="weightImperial">
+            </div>
+            <label for="age">Age:</label>
+            <input type="number" id="age" name="age" required>
+            <button type="button" onclick="calculateBMI()">Calculate BMI</button>
+        </form>
+        <p id="result"></p>
+        <!-- AdSense ad unit -->
+        <div class="adsense-container">
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-4582249016821847"
+                 data-ad-slot="XXXXXXX"
+                 data-ad-format="auto"></ins>
+            <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+    </div>
+    <script>
+        function updateFields() {
+            let system = document.getElementById('system').value;
+            if (system === 'metric') {
+                document.getElementById('metricInputs').style.display = 'block';
+                document.getElementById('imperialInputs').style.display = 'none';
+            } else {
+                document.getElementById('metricInputs').style.display = 'none';
+                document.getElementById('imperialInputs').style.display = 'block';
+            }
+        }
+
+        function calculateBMI() {
+            let system = document.getElementById('system').value;
+            let height, weight;
+
+            if (system === 'metric') {
+                height = parseFloat(document.getElementById('heightMetric').value) / 100; // Convert height from cm to meters
+                weight = parseFloat(document.getElementById('weightMetric').value);
+            } else {
+                let feet = parseFloat(document.getElementById('heightImperialFeet').value);
+                let inches = parseFloat(document.getElementById('heightImperialInches').value);
+                height = (feet * 12 + inches) * 0.0254; // Convert height to meters
+                weight = parseFloat(document.getElementById('weightImperial').value) * 0.453592; // Convert weight to kg
+            }
+
+            let age = parseInt(document.getElementById('age').value);
+
+            if (isNaN(height) || isNaN(weight) || isNaN(age)) {
+                document.getElementById('result').innerText = "Please enter valid values.";
+                return;
+            }
+
+            let bmi = weight / (height * height);
+
+            let category = '';
+
+            if (bmi < 18.5) {
+                category = 'Underweight';
+            } else if (bmi < 24.9) {
+                category = 'Normal weight';
+            } else if (bmi < 29.9) {
+                category = 'Overweight';
+            } else {
+                category = 'Obesity';
+            }
+
+            document.getElementById('result').innerText = `Your BMI is ${bmi.toFixed(2)} (${category})`;
+        }
+    </script>
+</body>
+</html>
